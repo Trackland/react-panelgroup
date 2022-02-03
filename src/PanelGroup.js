@@ -16,7 +16,7 @@ export default class PanelGroup extends React.Component {
     onResizeEnd: undefined,
     panelColor: undefined,
     borderColor: undefined,
-    showHandles: false
+    showHandles: false,
   };
 
   static propTypes = {
@@ -29,7 +29,7 @@ export default class PanelGroup extends React.Component {
     onResizeEnd: PropTypes.func,
     panelColor: PropTypes.string,
     borderColor: PropTypes.string,
-    showHandles: PropTypes.bool
+    showHandles: PropTypes.bool,
   };
   // Load initial panel configuration from props
   constructor(...args) {
@@ -103,8 +103,8 @@ export default class PanelGroup extends React.Component {
             style: {
               // making the ability to not have to be so terse for style settings on panel
               ...this.getPanelClass().defaultProps.style,
-              ...(props.panelWidths[i].style || {})
-            }
+              ...(props.panelWidths[i].style || {}),
+            },
           };
           panels.push(widthObj);
         } else {
@@ -115,7 +115,7 @@ export default class PanelGroup extends React.Component {
             minSize: defaultMinSize,
             maxSize: defaultMaxSize,
             snap: [],
-            style: {}
+            style: {},
           });
         }
 
@@ -126,7 +126,7 @@ export default class PanelGroup extends React.Component {
     }
 
     return {
-      panels
+      panels,
     };
   };
 
@@ -166,15 +166,15 @@ export default class PanelGroup extends React.Component {
       [`min${this.getSizeDirection(true)}`]: this.getPanelGroupMinSize(this.props.spacing),
       display: 'flex',
       flexDirection: this.props.direction,
-      flexGrow: 1
+      flexGrow: 1,
     };
 
     return {
       container,
       panel: {
         flexGrow: 0,
-        display: 'flex'
-      }
+        display: 'flex',
+      },
     };
   }
 
@@ -182,7 +182,8 @@ export default class PanelGroup extends React.Component {
     const { direction, panelColor } = this.props;
 
     const panel = this.state.panels[index];
-    const { style } = panel;
+    const { style = {} } = panel;
+
 
     // setting up the style for this panel.  Should probably be handled
     // in the child component, but this was easier for now
@@ -196,13 +197,13 @@ export default class PanelGroup extends React.Component {
       display: 'flex',
       overflow: 'hidden',
       position: 'relative',
-      ...style
+      ...style,
     };
     if (panelColor !== null) {
       // patch in the background color if it was supplied as a prop
       newPanelStyle = {
         ...newPanelStyle,
-        backgroundColor: panelColor
+        backgroundColor: panelColor,
       };
     }
 
@@ -219,7 +220,7 @@ export default class PanelGroup extends React.Component {
       resize: panelState.resize,
 
       // window resize handler if this panel is stretchy
-      onWindowResize: panelState.resize === 'stretch' ? this.setPanelSize : null
+      onWindowResize: panelState.resize === 'stretch' ? this.setPanelSize : null,
     };
 
     // if none of the panels included was stretchy, make the last one stretchy
@@ -230,7 +231,7 @@ export default class PanelGroup extends React.Component {
       style: panelStyle,
       key: index,
       panelID: index,
-      ...metadata
+      ...metadata,
     };
   }
 
@@ -449,7 +450,7 @@ export default class PanelGroup extends React.Component {
     }
     size = this.props.direction === 'column' ? size.y : size.x;
     if (size !== this.state.panels[panelIndex].size) {
-      const tempPanels = this.state.panels.map(panel => ({ ...panel }));
+      const tempPanels = this.state.panels.map((panel) => ({ ...panel }));
 
       // make sure we can actually resize this panel this small
       if (size < tempPanels[panelIndex].minSize) {
