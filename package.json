@@ -1,5 +1,5 @@
 {
-  "name": "@trackland/gatsby-plugin-panels",
+  "name": "@trackland/react-panelgroup",
   "version": "1.0.17",
   "description": "react-panelgroup React component",
   "main": "src/index.js",
