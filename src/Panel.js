@@ -32,6 +32,7 @@ export default class Panel extends React.Component {
 
   // Utility function to wait for next render before executing a function
   onNextFrame = (callback) => {
+    if (typeof window === 'undefined') return
     setTimeout(() => {
       window.requestAnimationFrame(callback);
     }, 0);
