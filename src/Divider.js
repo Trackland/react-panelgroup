@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 export default class Divider extends React.Component {
   static propTypes = {
@@ -11,8 +11,8 @@ export default class Divider extends React.Component {
     showHandles: PropTypes.bool,
     borderColor: PropTypes.string,
     onResizeStart: PropTypes.func,
-    onResizeEnd: PropTypes.func
-  };
+    onResizeEnd: PropTypes.func,
+  }
 
   static defaultProps = {
     dividerWidth: 1,
@@ -21,41 +21,41 @@ export default class Divider extends React.Component {
     showHandles: false,
     borderColor: undefined,
     onResizeStart: undefined,
-    onResizeEnd: undefined
-  };
+    onResizeEnd: undefined,
+  }
 
   constructor(...args) {
-    super(...args);
+    super(...args)
 
     this.state = {
       dragging: false,
-      initPos: { x: null, y: null }
-    };
+      initPos: { x: null, y: null },
+    }
   }
 
   // Add/remove event listeners based on drag state
   componentDidUpdate(props, state) {
     if (this.state.dragging && !state.dragging) {
-      document.addEventListener('mousemove', this.onMouseMove);
+      document.addEventListener('mousemove', this.onMouseMove)
       document.addEventListener('touchmove', this.onTouchMove, {
-        passive: false
-      });
-      document.addEventListener('mouseup', this.handleDragEnd);
+        passive: false,
+      })
+      document.addEventListener('mouseup', this.handleDragEnd)
       document.addEventListener('touchend', this.handleDragEnd, {
-        passive: false
-      });
+        passive: false,
+      })
       // maybe move it to setState callback ?
-      this.props.onResizeStart();
+      this.props.onResizeStart()
     } else if (!this.state.dragging && state.dragging) {
-      document.removeEventListener('mousemove', this.onMouseMove);
+      document.removeEventListener('mousemove', this.onMouseMove)
       document.removeEventListener('touchmove', this.onTouchMove, {
-        passive: false
-      });
-      document.removeEventListener('mouseup', this.handleDragEnd);
+        passive: false,
+      })
+      document.removeEventListener('mouseup', this.handleDragEnd)
       document.removeEventListener('touchend', this.handleDragEnd, {
-        passive: false
-      });
-      this.props.onResizeEnd();
+        passive: false,
+      })
+      this.props.onResizeEnd()
     }
   }
 
@@ -65,88 +65,88 @@ export default class Divider extends React.Component {
       dragging: true,
       initPos: {
         x,
-        y
-      }
-    });
+        y,
+      },
+    })
 
-    e.stopPropagation();
-    e.preventDefault();
-  };
+    e.stopPropagation()
+    e.preventDefault()
+  }
 
   // End drag state
-  handleDragEnd = (e) => {
-    this.setState({ dragging: false });
-    e.stopPropagation();
-    e.preventDefault();
-  };
+  handleDragEnd = e => {
+    this.setState({ dragging: false })
+    e.stopPropagation()
+    e.preventDefault()
+  }
 
   // Call resize handler if we're dragging
   handleDragMove = (e, x, y) => {
-    if (!this.state.dragging) return;
+    if (!this.state.dragging) return
 
     const initDelta = {
       x: x - this.state.initPos.x,
-      y: y - this.state.initPos.y
-    };
+      y: y - this.state.initPos.y,
+    }
 
     const flowMask = {
       x: this.props.direction === 'row' ? 1 : 0,
-      y: this.props.direction === 'column' ? 1 : 0
-    };
+      y: this.props.direction === 'column' ? 1 : 0,
+    }
 
-    const flowDelta = initDelta.x * flowMask.x + initDelta.y * flowMask.y;
+    const flowDelta = initDelta.x * flowMask.x + initDelta.y * flowMask.y
 
     // Resize the panels
-    const resultDelta = this.handleResize(this.props.panelID, initDelta);
+    const resultDelta = this.handleResize(this.props.panelID, initDelta)
 
     // if the divider moved, reset the initPos
     if (resultDelta + flowDelta !== 0) {
       // Did we move the expected amount? (snapping will result in a larger delta)
-      const expectedDelta = resultDelta === flowDelta;
+      const expectedDelta = resultDelta === flowDelta
 
       this.setState({
         initPos: {
           // if we moved more than expected, add the difference to the Position
           x: x + (expectedDelta ? 0 : resultDelta * flowMask.x),
-          y: y + (expectedDelta ? 0 : resultDelta * flowMask.y)
-        }
-      });
+          y: y + (expectedDelta ? 0 : resultDelta * flowMask.y),
+        },
+      })
     }
 
-    e.stopPropagation();
-    e.preventDefault();
-  };
+    e.stopPropagation()
+    e.preventDefault()
+  }
 
   // Call resize on mouse events
   // Event onMosueDown
-  onMouseDown = (e) => {
+  onMouseDown = e => {
     // only left mouse button
-    if (e.button !== 0) return;
-    this.handleDragStart(e, e.pageX, e.pageY);
-  };
+    if (e.button !== 0) return
+    this.handleDragStart(e, e.pageX, e.pageY)
+  }
   // Event onMouseMove
-  onMouseMove = (e) => {
-    this.handleDragMove(e, e.pageX, e.pageY);
-  };
+  onMouseMove = e => {
+    this.handleDragMove(e, e.pageX, e.pageY)
+  }
 
   // Call resize on Touch events (mobile)
   // Event ontouchstart
-  onTouchStart = (e) => {
-    this.handleDragStart(e, e.touches[0].clientX, e.touches[0].clientY);
-  };
+  onTouchStart = e => {
+    this.handleDragStart(e, e.touches[0].clientX, e.touches[0].clientY)
+  }
 
   // Event ontouchmove
-  onTouchMove = (e) => {
-    this.handleDragMove(e, e.touches[0].clientX, e.touches[0].clientY);
-  };
+  onTouchMove = e => {
+    this.handleDragMove(e, e.touches[0].clientX, e.touches[0].clientY)
+  }
 
   // Handle resizing
-  handleResize = (i, delta) => this.props.handleResize(i, delta);
+  handleResize = (i, delta) => this.props.handleResize(i, delta)
 
   // Utility functions for handle size provided how much bleed
   // we want outside of the actual divider div
-  getHandleWidth = () => this.props.dividerWidth + this.props.handleBleed * 2;
-  getHandleOffset = () => this.props.dividerWidth / 2 - this.getHandleWidth() / 2;
+  getHandleWidth = () => this.props.dividerWidth + this.props.handleBleed * 2
+  getHandleOffset = () => this.props.dividerWidth / 2 - this.getHandleWidth() / 2
 
   // Render component
   render() {
@@ -159,7 +159,7 @@ export default class Divider extends React.Component {
         minHeight: this.props.direction === 'column' ? this.props.dividerWidth : 'auto',
         maxHeight: this.props.direction === 'column' ? this.props.dividerWidth : 'auto',
         flexGrow: 0,
-        position: 'relative'
+        position: 'relative',
       },
       handle: {
         position: 'absolute',
@@ -169,15 +169,28 @@ export default class Divider extends React.Component {
         top: this.props.direction === 'column' ? this.getHandleOffset() : 0,
         backgroundColor: this.props.showHandles ? 'rgba(0,128,255,0.25)' : 'auto',
         cursor: this.props.direction === 'row' ? 'col-resize' : 'row-resize',
-        zIndex: 100
-      }
-    };
-    Object.assign(style.divider, { backgroundColor: this.props.borderColor });
+        zIndex: 100,
+      },
+      handlePhoenix: {
+        position: 'absolute',
+        width: this.props.direction === 'row' ? '17px' : '18px',
+        height: this.props.direction === 'column' ? '19px' : '17px',
+        left: this.props.direction === 'row' ? '17px' : 'calc(100% - 21px)',
+        top: this.props.direction === 'column' ? this.getHandleOffset() : '11px',
+        backgroundColor: this.props.showHandles ? 'rgba(0,128,255,0.25)' : 'auto',
+        cursor: this.props.direction === 'row' ? 'col-resize' : 'row-resize',
+        zIndex: 100,
+        borderBottomStyle: 'double',
+        borderBottom: '6px #ccc double',
+        rotate: this.props.direction === 'row' ? '90deg' : 'none',
+      },
+    }
+    Object.assign(style.divider, { backgroundColor: this.props.borderColor })
 
     // Add custom class if dragging
-    let className = 'divider';
+    let className = 'divider'
     if (this.state.dragging) {
-      className += ' dragging';
+      className += ' dragging'
     }
 
     return (
@@ -188,7 +201,8 @@ export default class Divider extends React.Component {
         onTouchStart={this.onTouchStart}
       >
         <div style={style.handle} />
+        <div style={style.handlePhoenix} />
       </div>
-    );
+    )
   }
 }
